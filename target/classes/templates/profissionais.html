@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Profissionais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-image: url("/img/banner_1.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+    </style>
+  </head>
+  <body class="bg-black bg-opacity-50 p-8 font-sans">
+    <div class="max-w-3xl mx-auto bg-[rgba(0,0,0,0.75)] p-6 shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 text-white">
+        Cadastrar Profissional
+      </h2>
+
+      <form
+        th:action="@{/profissionais}"
+        th:object="${profissional}"
+        method="post"
+        class="space-y-4"
+      >
+        <div>
+          <label class="block text-white">Nome:</label>
+          <input
+            th:field="*{nome}"
+            required
+            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+          />
+        </div>
+
+        <div>
+          <label class="block text-white">Especialidade:</label>
+          <input
+            th:field="*{especialidade}"
+            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+          />
+        </div>
+
+        <div>
+          <label class="block text-white">Ativo:</label>
+          <select
+            th:field="*{ativo}"
+            class="w-full px-4 py-2 border rounded-md focus:outline-none"
+          >
+            <option th:value="true">Sim</option>
+            <option th:value="false">Não</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          class="bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700 transition"
+        >
+          Salvar
+        </button>
+      </form>
+    </div>
+
+    <!-- Botão Ver Profissionais Ativos -->
+    <div class="max-w-4xl mx-auto mt-8 flex justify-center gap-8">
+      <a
+        href="/usuarios"
+        class="bg-gray-700 text-white px-6 py-2 rounded hover:bg-gray-800 transition"
+        >Voltar</a
+      >
+      <a
+        href="/"
+        class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition"
+        >Home</a
+      >
+      <a
+        href="/profissionais-ativos"
+        class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+      >
+        Ver Profissionais Ativos
+      </a>
+    </div>
+
+    <!-- Lista de profissionais -->
+    <div class="max-w-4xl mx-auto mt-6">
+      <h3 class="text-xl font-semibold mb-2 text-white">Profissionais</h3>
+      <div class="flex flex-col items-center">
+        <div
+          th:each="p : ${profissionais}"
+          class="flex w-[900px] items-center justify-around bg-[rgba(0,0,0,0.75)] p-4 shadow hover:shadow-md transition"
+        >
+          <div class="w-20">
+            <p class="text-white font-medium" th:text="${p.nome}"></p>
+          </div>
+          <div class="w-20">
+            <p class="text-white" th:text="${p.especialidade}"></p>
+          </div>
+          <div class="w-20">
+            <p
+              class="text-sm text-white"
+              th:text="'Ativo: ' + (${p.ativo} ? 'Sim' : 'Não')"
+            ></p>
+          </div>
+          <div class="w-20">
+            <!-- Form para alterar status -->
+            <form
+              th:action="@{'/profissionais/' + ${p.id} + '/status'}"
+              method="post"
+            >
+              <input type="hidden" name="ativo" th:value="${!p.ativo}" />
+              <button
+                type="submit"
+                th:text="${p.ativo} ? 'Inativar' : 'Ativar'"
+                class="mt-2 bg-yellow-500 text-white px-4 py-1 rounded hover:bg-yellow-600 transition"
+              ></button>
+            </form>
+          </div>
+          <div class="w-20">
+            <!-- Form para excluir profissional -->
+            <form
+              th:action="@{'/profissionais/' + ${p.id} + '/excluir'}"
+              method="post"
+              class="mt-2"
+            >
+              <button
+                type="submit"
+                onclick="return confirm('Tem certeza que deseja excluir este profissional?');"
+                class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 transition"
+              >
+                Excluir
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
